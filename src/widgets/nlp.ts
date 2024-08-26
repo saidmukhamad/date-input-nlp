@@ -134,12 +134,17 @@ class DateGenerator {
 
     switch (parsedDate.type) {
       case "specific_time":
+        // @ts-ignore
         result.setHours(parsedDate.value.hours, parsedDate.value.minutes, 0, 0);
+
+        // @ts-ignore
         if (parsedDate.value.days) {
+          // @ts-ignore
           result.setDate(result.getDate() + parsedDate.value.days);
         }
         return result;
       case "specific_date":
+        // @ts-ignore
         return new Date(parsedDate.value.year, parsedDate.value.month, parsedDate.value.day);
       case "numeric":
       case "relative":
@@ -200,9 +205,14 @@ class SuggestionEngine {
       for (const parsedDate of parsedResults) {
         switch (parsedDate.type) {
           case "specific_time":
+            // @ts-ignore
             const dayText = parsedDate.value.days === 1 ? "Tomorrow" : "Today";
+            // @ts-ignore
             let timeText = this.formatTime(parsedDate.value);
+            // @ts-ignore
             if (parsedDate.value.timezone !== undefined) {
+              // @ts-ignore
+
               timeText += ` ${this.formatTimezone(parsedDate.value.timezone)}`;
             }
             const suggestionText = `${dayText} at ${timeText}`;
@@ -211,16 +221,21 @@ class SuggestionEngine {
               date: this.dateGenerator.generateDate(parsedDate),
               probability: this.calculateReverseSimilarity(input, suggestionText),
             });
+            // @ts-ignore
+
             if (parsedDate.value.days === 0 && !input.toLowerCase().includes("today")) {
               const tomorrowSuggestion = `Tomorrow at ${timeText}`;
               suggestions.push({
+                // @ts-ignore
                 text: tomorrowSuggestion,
+                // @ts-ignore
                 date: this.dateGenerator.generateDate({ ...parsedDate, value: { ...parsedDate.value, days: 1 } }),
                 probability: this.calculateReverseSimilarity(input, tomorrowSuggestion),
               });
             }
             break;
           case "specific_date":
+            // @ts-ignore
             const dateText = this.formatDate(parsedDate.value);
             suggestions.push({
               text: dateText,
@@ -230,7 +245,11 @@ class SuggestionEngine {
             break;
           case "numeric":
             let numericText = `In ${this.formatTimeUnits(parsedDate.value)}`;
+            // @ts-ignore
+
             if (parsedDate.value.atTime) {
+              // @ts-ignore
+
               numericText += ` at ${this.formatTime(parsedDate.value.atTime)}`;
             }
             suggestions.push({
@@ -304,6 +323,7 @@ class SuggestionEngine {
       const suggestionText = `In ${amount} ${unit}${amount !== 1 ? "s" : ""}`;
       return {
         text: suggestionText,
+        // @ts-ignore
         date: this.dateGenerator.generateDate({ type: "numeric", value: { [unit + "s"]: amount } }),
         probability: 1,
       };
@@ -317,6 +337,7 @@ class SuggestionEngine {
         const suggestionText = `In ${amount} ${unit}${amount !== 1 ? "s" : ""}`;
         return {
           text: suggestionText,
+          // @ts-ignore
           date: this.dateGenerator.generateDate({ type: "numeric", value: { [unit + "s"]: amount } }),
           probability: this.calculateReverseSimilarity(partialUnit, unit),
         };
